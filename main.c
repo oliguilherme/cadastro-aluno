@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #define MAX_ALUNOS 4
 
 
@@ -16,18 +18,17 @@ void processarOpcao(Aluno alunos[], int opcao, int *qnt);
 
 void cadastrarAluno(Aluno alunos[], int *qnt);
 void exibirAluno(Aluno alunos[], int *qnt);
-void editarAluno(Aluno alunos[], int qnt, int id);
+void editarAluno(Aluno alunos[], int *qnt, int id);
+void removerAluno(Aluno alunos[], int *qnt);
 
 
 int main() {
     system("cls");
     
     Aluno alunos[MAX_ALUNOS];
-    int qnt = 0, id, opcao;
-    float nota;
+    int qnt = 0, opcao;
 
     do {   
-        system("cls"); 
 
         imprimirInterface();
         scanf("%d", &opcao);
@@ -36,6 +37,7 @@ int main() {
 
         printf("\nPressione ENTER para continuar...");
         getchar(); getchar();
+        system("cls");
     } while (opcao != 5);
 
     return 0;
@@ -51,6 +53,7 @@ void imprimirInterface() {
 }
 
 void processarOpcao(Aluno alunos[], int opcao, int *qnt) {
+    system("cls");
     int id;
     switch (opcao) {
         case 1:
@@ -65,7 +68,7 @@ void processarOpcao(Aluno alunos[], int opcao, int *qnt) {
             editarAluno(alunos, qnt, id);
             break;
         case 4:
-            
+            removerAluno(alunos, qnt);
             break;
         case 5:
             printf("Saindo do sistema...\n");
@@ -95,7 +98,7 @@ void cadastrarAluno(Aluno alunos[], int *qnt) {
     getchar();
     printf("Matricula de %s: ", novoAluno.nome);
     fgets(novoAluno.matricula, 6, stdin);
-    //novoAluno.matricula[strcspn(novoAluno.matricula, "\n")] = '\0';
+    novoAluno.matricula[strcspn(novoAluno.matricula, "\n")] = '\0';
 
     
     do {
@@ -118,25 +121,26 @@ void exibirAluno(Aluno alunos[],int *qnt){
         printf("Nenhum aluno cadastrado no sistema.\n");
     } else {
         do {
+            printf("=================================================================");
             printf("\nNome: %s", alunos[i].nome);
             printf("\nID: %d", alunos[i].id);
             printf("\nNota: %.2f", alunos[i].nota);
             printf("\nMatricula: %s", alunos[i].matricula);
+            printf("\n=================================================================\n");
+            
             i++;        
         } while (i < *qnt); 
     }
-
-    printf("Quantidade de alunos: %d", *qnt);//mostra quantidade de alunos
     
 }
 
-void editarAluno(Aluno alunos[], int qnt, int id) {
+void editarAluno(Aluno alunos[], int *qnt, int id) {
     int opcao;
 
-    if (qnt == 0) {
+    if (*qnt == 0) {
         printf("Nenhum aluno cadastrado no sistema.\n");
     } else {
-        for (int i = 0; i < qnt; i++) {
+        for (int i = 0; i < *qnt; i++) {
             if (id == alunos[i].id) {
                 printf("Qual campo deseja alterar?\n");
                 printf("1 - Nome\n2 - Matricula\n3 - Nota\n");
@@ -171,5 +175,24 @@ void editarAluno(Aluno alunos[], int qnt, int id) {
                 }
             }
         } 
+    }
+}
+
+void removerAluno(Aluno alunos[], int *qnt) {
+    int id;
+    //printf(" qnt %d",*qnt);
+    printf("Informe o id do aluno que deseja remover: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < *qnt; i++) {
+        if (alunos[i].id == id) {
+            printf("Aluno encontrado!\n");
+
+            for(int j = i; j < *qnt - 1; j++){
+                alunos[j] = alunos[j + 1];
+            }
+            printf("Aluno removido com sucesso!\n");
+            (*qnt)--;
+        }
     }
 }
